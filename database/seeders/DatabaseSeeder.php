@@ -33,7 +33,16 @@ class DatabaseSeeder extends Seeder
         Setting::set('contact_phone', '081234567890');
         Setting::set('instagram', '@kkntamansari2026');
 
-        // Sample members with user accounts
+        // Data dummy (anggota + laporan contoh) HANYA di-seed kalau faker tersedia.
+        // Di production (composer install --no-dev) faker tidak ada, jadi bagian ini di-skip
+        // otomatis dan hanya admin + settings yang dibuat.
+        // if (function_exists('fake')) {
+        //     $this->seedSampleData();
+        // }
+    }
+
+    private function seedSampleData(): void
+    {
         $names = [
             'Ahmad Fauzi', 'Siti Nurhaliza', 'Budi Santoso', 'Dewi Lestari',
             'Rizky Pratama', 'Putri Ayu', 'Andi Wijaya', 'Nadia Rahmawati',
@@ -54,6 +63,7 @@ class DatabaseSeeder extends Seeder
             $member = Member::create([
                 'user_id' => $user->id,
                 'nim' => '2100'.str_pad((string) ($i + 1), 3, '0', STR_PAD_LEFT),
+                'age' => fake()->numberBetween(19, 24),
                 'jurusan' => fake()->randomElement(['Teknik Informatika', 'Manajemen', 'Ilmu Komunikasi', 'Agroteknologi', 'Kesehatan Masyarakat']),
                 'fakultas' => fake()->randomElement(['Teknik', 'Ekonomi', 'Ilmu Sosial', 'Pertanian', 'Kesehatan']),
                 'universitas' => 'Universitas Contoh',
