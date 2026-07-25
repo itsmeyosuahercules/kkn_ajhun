@@ -1,0 +1,56 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Brand palette diselaraskan dengan logo KKN Taman Sari (teal + navy + amber).
+       Seluruh utility emerald-* di remap ke teal supaya tema global ganti tanpa edit tiap view. */
+    --color-emerald-50: #ecfbfc;
+    --color-emerald-100: #d0f4f6;
+    --color-emerald-200: #a5e9ee;
+    --color-emerald-300: #6fd7e0;
+    --color-emerald-400: #3bbecb;
+    --color-emerald-500: #1fa4b3;
+    --color-emerald-600: #17899a;
+    --color-emerald-700: #166f80;
+    --color-emerald-800: #185a69;
+    --color-emerald-900: #184b58;
+    --color-emerald-950: #0a2f3a;
+
+    /* teal-* juga diselaraskan supaya gradient hero konsisten */
+    --color-teal-50: #ecfbfc;
+    --color-teal-100: #d0f4f6;
+    --color-teal-200: #a5e9ee;
+    --color-teal-300: #6fd7e0;
+    --color-teal-400: #3bbecb;
+    --color-teal-500: #1fa4b3;
+    --color-teal-600: #17899a;
+    --color-teal-700: #166f80;
+    --color-teal-800: #185a69;
+    --color-teal-900: #184b58;
+    --color-teal-950: #0a2f3a;
+
+    /* Navy brand (dipakai untuk teks/aksen gelap) */
+    --color-brand-navy: #123a5c;
+    --color-brand-teal: #1fa4b3;
+    --color-brand-amber: #f2b134;
+}
+
+@layer utilities {
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}

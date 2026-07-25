@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class ReportPhoto extends Model
+{
+    protected $fillable = [
+        'report_id',
+        'photo',
+        'caption',
+        'order',
+    ];
+
+    public function report(): BelongsTo
+    {
+        return $this->belongsTo(Report::class);
+    }
+
+    public function url(): string
+    {
+        return asset('storage/'.$this->photo);
+    }
+}

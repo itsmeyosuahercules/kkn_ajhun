@@ -1,0 +1,87 @@
+@csrf
+@if($member ?? null) @method('PUT') @endif
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Nama Lengkap</label>
+        <input type="text" name="name" value="{{ old('name', $member->user->name ?? '') }}" required
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Email</label>
+        <input type="email" name="email" value="{{ old('email', $member->user->email ?? '') }}" required
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Password {{ isset($member) ? '(kosongkan jika tidak diubah)' : '' }}</label>
+        <input type="password" name="password"
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Jabatan</label>
+        <input type="text" name="jabatan" value="{{ old('jabatan', $member->jabatan ?? '') }}" placeholder="Koordinator Desa, Sekretaris, dll"
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">NIM</label>
+        <input type="text" name="nim" value="{{ old('nim', $member->nim ?? '') }}"
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Umur</label>
+        <input type="number" name="age" min="15" max="100" value="{{ old('age', $member->age ?? '') }}"
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">No. HP</label>
+        <input type="text" name="phone" value="{{ old('phone', $member->phone ?? '') }}"
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Jurusan</label>
+        <input type="text" name="jurusan" value="{{ old('jurusan', $member->jurusan ?? '') }}"
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Fakultas</label>
+        <input type="text" name="fakultas" value="{{ old('fakultas', $member->fakultas ?? '') }}"
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Universitas</label>
+        <input type="text" name="universitas" value="{{ old('universitas', $member->universitas ?? '') }}"
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Instagram</label>
+        <input type="text" name="instagram" value="{{ old('instagram', $member->instagram ?? '') }}"
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+    </div>
+    <div class="sm:col-span-2">
+        <label class="block text-sm font-medium text-stone-700 mb-1">Bio</label>
+        <textarea name="bio" rows="3" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">{{ old('bio', $member->bio ?? '') }}</textarea>
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Foto Profil</label>
+        @if(($member->photo ?? null))
+            <img src="{{ $member->photoUrl() }}" class="w-16 h-16 rounded-full object-cover mb-2">
+        @endif
+        <input type="file" name="photo" accept="image/*"
+            class="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:text-emerald-700 file:text-sm">
+    </div>
+    <div>
+        <label class="block text-sm font-medium text-stone-700 mb-1">CV (opsional, PDF/DOC, maks 5MB)</label>
+        @if(($member->cv ?? null))
+            <p class="mb-2"><a href="{{ $member->cvUrl() }}" target="_blank" class="text-emerald-700 text-sm hover:underline">📄 Lihat CV saat ini</a></p>
+        @endif
+        <input type="file" name="cv" accept=".pdf,.doc,.docx"
+            class="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:text-emerald-700 file:text-sm">
+    </div>
+</div>
+
+<div class="flex items-center gap-3 mt-6">
+    <button type="submit" class="bg-emerald-600 text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-emerald-700 transition">
+        Simpan
+    </button>
+    <a href="{{ route('admin.members.index') }}" class="text-stone-600 text-sm hover:underline">Batal</a>
+</div>
