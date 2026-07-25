@@ -13,3 +13,6 @@
 <a href="{{ route('admin.settings.edit') }}" class="{{ $navClass(request()->routeIs('admin.settings.*')) }}">
     <span>⚙️</span> Pengaturan Website
 </a>
+<a href="{{ route('admin.guide') }}" class="{{ $navClass(request()->routeIs('admin.guide')) }}">
+    <span>❓</span> Panduan
+</a>

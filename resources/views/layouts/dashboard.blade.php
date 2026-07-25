@@ -51,10 +51,12 @@
                     <a href="{{ route('admin.members.index') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('admin.members.*') ? 'bg-emerald-600 text-white' : 'text-stone-600' }}">Anggota</a>
                     <a href="{{ route('admin.reports.index') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('admin.reports.*') ? 'bg-emerald-600 text-white' : 'text-stone-600' }}">Laporan</a>
                     <a href="{{ route('admin.settings.edit') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('admin.settings.*') ? 'bg-emerald-600 text-white' : 'text-stone-600' }}">Pengaturan</a>
+                    <a href="{{ route('admin.guide') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('admin.guide') ? 'bg-emerald-600 text-white' : 'text-stone-600' }}">Panduan</a>
                 @else
                     <a href="{{ route('member.dashboard') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('member.dashboard') ? 'bg-emerald-600 text-white' : 'text-stone-600' }}">Dashboard</a>
                     <a href="{{ route('member.reports.index') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('member.reports.*') ? 'bg-emerald-600 text-white' : 'text-stone-600' }}">Laporan</a>
                     <a href="{{ route('member.profile.edit') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('member.profile.*') ? 'bg-emerald-600 text-white' : 'text-stone-600' }}">Profil</a>
+                    <a href="{{ route('member.guide') }}" class="whitespace-nowrap px-3 py-1.5 rounded-lg {{ request()->routeIs('member.guide') ? 'bg-emerald-600 text-white' : 'text-stone-600' }}">Panduan</a>
                 @endif
                 <form method="POST" action="{{ route('logout') }}" class="ml-auto">
                     @csrf

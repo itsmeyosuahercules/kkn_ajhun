@@ -10,3 +10,6 @@
 <a href="{{ route('member.profile.edit') }}" class="{{ $navClass(request()->routeIs('member.profile.*')) }}">
     <span>👤</span> Profil Saya
 </a>
+<a href="{{ route('member.guide') }}" class="{{ $navClass(request()->routeIs('member.guide')) }}">
+    <span>❓</span> Panduan
+</a>

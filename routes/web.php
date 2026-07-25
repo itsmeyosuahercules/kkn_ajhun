@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Admin\ReportPhotoController as AdminReportPhotoController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\GuideController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
 use App\Http\Controllers\Member\ProfileController as MemberProfileController;
 use App\Http\Controllers\Member\ReportController as MemberReportController;
@@ -51,6 +52,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     Route::get('settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+    Route::get('panduan', [GuideController::class, 'admin'])->name('guide');
 });
 
 /*
@@ -66,4 +69,6 @@ Route::prefix('member')->name('member.')->middleware(['auth', 'role:member'])->g
 
     Route::resource('reports', MemberReportController::class)->except(['show']);
     Route::delete('reports/{report}/photos/{photo}', [MemberReportController::class, 'destroyPhoto'])->name('reports.photos.destroy');
+
+    Route::get('panduan', [GuideController::class, 'member'])->name('guide');
 });
