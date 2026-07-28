@@ -3,127 +3,393 @@
 @section('title', $report->title . ' - ' . $siteSettings['site_name'])
 
 @section('content')
-<section class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-    <a href="{{ route('timeline') }}" class="text-emerald-700 text-sm font-medium hover:underline">&larr; Kembali ke Timeline</a>
-
-    <div class="mt-4 mb-6">
-        <h1 class="text-2xl sm:text-3xl font-bold text-stone-800">{{ $report->title }}</h1>
-        <div class="flex flex-wrap items-center gap-3 mt-3 text-sm text-stone-500">
-            <span>&#128197; {{ $report->activity_date->translatedFormat('d F Y') }}</span>
-            @if($report->location)<span>&#128205; {{ $report->location }}</span>@endif
-            <a href="{{ route('members.show', $report->member) }}" class="flex items-center gap-2 hover:text-emerald-700">
-                <img src="{{ $report->member->photoUrl() }}" class="w-6 h-6 rounded-full object-cover" alt="">
-                {{ $report->member->user->name }}
+<article class="pb-16" id="report-detail"
+    data-like-url="{{ route('reports.like', $report) }}"
+    data-comment-url="{{ route('reports.comments.store', $report) }}"
+    data-liked="{{ $liked ? '1' : '0' }}">
+    {{-- Header ringkas --}}
+    <div class="border-b border-stone-200 bg-white">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+            <a href="{{ route('timeline') }}" class="inline-flex items-center gap-1.5 text-sm text-emerald-700 hover:text-emerald-800 font-medium mb-5">
+                <span aria-hidden="true">&larr;</span> Timeline
             </a>
-        </div>
-    </div>
 
-    {{-- Media utama: YouTube embed jika ada ID, kalau tidak tampil cover foto --}}
-    @if($report->youtubeEmbedUrl())
-        <div class="mb-8">
-            <h2 class="text-xl font-bold text-stone-800 mb-4">Dokumentasi Video</h2>
-            <div class="aspect-video rounded-xl overflow-hidden bg-stone-900 shadow-lg">
-                <iframe
-                    src="{{ $report->youtubeEmbedUrl() }}"
-                    title="{{ $report->title }}"
-                    class="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen
-                    loading="lazy">
-                </iframe>
+            <h1 class="text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight leading-tight">
+                {{ $report->title }}
+            </h1>
+
+            <div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-stone-500">
+                <time datetime="{{ $report->activity_date->format('Y-m-d') }}">
+                    {{ $report->activity_date->translatedFormat('d F Y') }}
+                </time>
+                @if($report->location)
+                    <span class="hidden sm:inline text-stone-300" aria-hidden="true">|</span>
+                    <span>{{ $report->location }}</span>
+                @endif
             </div>
-        </div>
-    @else
-        <div class="aspect-video bg-stone-100 rounded-xl overflow-hidden mb-6">
-            <img src="{{ $report->coverUrl() }}" alt="{{ $report->title }}" class="w-full h-full object-cover">
-        </div>
-    @endif
 
-    <div class="prose max-w-none text-stone-700 leading-relaxed whitespace-pre-line mb-8">
-        {{ $report->description }}
-    </div>
-
-    {{-- Like & ringkasan interaksi --}}
-    <div class="flex flex-wrap items-center gap-4 mb-10 pb-6 border-b border-stone-200">
-        <div class="flex items-center gap-2 text-sm text-stone-600">
-            <span class="font-semibold text-stone-800">{{ $report->likes_count }}</span> suka
-            <span class="text-stone-300">&middot;</span>
-            <span class="font-semibold text-stone-800">{{ $report->comments_count }}</span> komentar
-        </div>
-
-        @auth
-            <form method="POST" action="{{ route('reports.like', $report) }}">
-                @csrf
-                <button type="submit"
-                    class="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg transition {{ $liked ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'border border-emerald-600 text-emerald-700 hover:bg-emerald-50' }}">
-                    {{ $liked ? 'Batal Suka' : 'Suka' }}
-                </button>
-            </form>
-        @else
-            <a href="{{ route('login') }}" class="text-sm text-emerald-700 hover:underline">
-                Login untuk suka &amp; berkomentar
-            </a>
-        @endauth
-    </div>
-
-    {{-- Dokumentasi Foto: selalu di section sendiri (di bawah video jika ada) --}}
-    @if($report->photos->isNotEmpty())
-        <div class="mb-12">
-            <h2 class="text-xl font-bold text-stone-800 mb-4">Dokumentasi Foto</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                @foreach($report->photos as $photo)
-                    <div class="aspect-square rounded-lg overflow-hidden bg-stone-100">
-                        <img src="{{ $photo->url() }}" alt="Dokumentasi foto" class="w-full h-full object-cover">
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endif
-
-    {{-- Komentar --}}
-    <div>
-        <h2 class="text-xl font-bold text-stone-800 mb-4">Komentar</h2>
-
-        @auth
-            <form method="POST" action="{{ route('reports.comments.store', $report) }}" class="mb-6">
-                @csrf
-                <textarea name="body" rows="3" required maxlength="1000" placeholder="Tulis komentar Anda..."
-                    class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">{{ old('body') }}</textarea>
-                @error('body')
-                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
-                @enderror
-                <button type="submit" class="mt-2 bg-emerald-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-emerald-700 transition">
-                    Kirim Komentar
-                </button>
-            </form>
-        @else
-            <p class="text-sm text-stone-500 mb-6">
-                <a href="{{ route('login') }}" class="text-emerald-700 hover:underline">Login</a> dulu untuk menulis komentar.
-            </p>
-        @endauth
-
-        @forelse($report->comments as $comment)
-            <div class="border border-stone-200 rounded-xl p-4 mb-3 bg-white">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <p class="text-sm font-semibold text-stone-800">{{ $comment->user->name }}</p>
-                        <p class="text-xs text-stone-400 mt-0.5">{{ $comment->created_at->diffForHumans() }}</p>
-                    </div>
-                    @auth
-                        @if(auth()->user()->isAdmin() || auth()->id() === $comment->user_id)
-                            <form method="POST" action="{{ route('reports.comments.destroy', $comment) }}" onsubmit="return confirm('Hapus komentar ini?');">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="text-xs text-red-600 hover:underline">Hapus</button>
-                            </form>
-                        @endif
-                    @endauth
+            <a href="{{ route('members.show', $report->member) }}"
+               class="mt-5 inline-flex items-center gap-3 rounded-full bg-stone-50 hover:bg-emerald-50 border border-stone-200 hover:border-emerald-200 pl-1.5 pr-4 py-1.5 transition">
+                <img src="{{ $report->member->photoUrl() }}" alt="" class="w-9 h-9 rounded-full object-cover">
+                <div class="leading-tight">
+                    <p class="text-sm font-semibold text-stone-800">{{ $report->member->user->name }}</p>
+                    <p class="text-xs text-stone-500">{{ $report->member->jabatan ?: 'Anggota KKN' }}</p>
                 </div>
-                <p class="text-sm text-stone-700 mt-2 whitespace-pre-line">{{ $comment->body }}</p>
-            </div>
-        @empty
-            <p class="text-sm text-stone-500">Belum ada komentar. Jadilah yang pertama!</p>
-        @endforelse
+            </a>
+        </div>
     </div>
-</section>
+
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+        {{-- Media --}}
+        <div class="mt-8">
+            @if($report->youtubeEmbedUrl())
+                <div class="aspect-video rounded-2xl overflow-hidden bg-stone-900 shadow-md ring-1 ring-black/5">
+                    <iframe
+                        src="{{ $report->youtubeEmbedUrl() }}"
+                        title="{{ $report->title }}"
+                        class="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                        loading="lazy">
+                    </iframe>
+                </div>
+            @else
+                <div class="aspect-video rounded-2xl overflow-hidden bg-stone-100 shadow-md ring-1 ring-black/5">
+                    <img src="{{ $report->coverUrl() }}" alt="{{ $report->title }}" class="w-full h-full object-cover">
+                </div>
+            @endif
+        </div>
+
+        {{-- Deskripsi --}}
+        <div class="mt-8 text-stone-700 text-base sm:text-[1.05rem] leading-8 whitespace-pre-line">
+            {{ $report->description }}
+        </div>
+
+        {{-- Aksi suka --}}
+        <div class="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white border border-stone-200 px-4 py-3.5 shadow-sm">
+            <div class="flex items-center gap-4 text-sm text-stone-600">
+                <span>
+                    <span id="likes-count" class="font-semibold text-stone-900">{{ $report->likes_count }}</span> suka
+                </span>
+                <span class="text-stone-300">|</span>
+                <span>
+                    <span id="comments-count" class="font-semibold text-stone-900">{{ $report->comments_count }}</span> komentar
+                </span>
+            </div>
+
+            @auth
+                <button type="button" id="like-btn"
+                    class="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full transition {{ $liked ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100' }}">
+                    <span id="like-icon" aria-hidden="true">{{ $liked ? '♥' : '♡' }}</span>
+                    <span id="like-label">{{ $liked ? 'Disukai' : 'Suka' }}</span>
+                </button>
+            @else
+                <a href="{{ route('login') }}"
+                   class="inline-flex items-center text-sm font-medium text-emerald-700 hover:text-emerald-800">
+                    Login untuk berinteraksi &rarr;
+                </a>
+            @endauth
+        </div>
+
+        {{-- Dokumentasi Foto --}}
+        @if($report->photos->isNotEmpty())
+            <section class="mt-12">
+                <div class="flex items-end justify-between gap-3 mb-5">
+                    <div>
+                        <h2 class="text-lg font-bold text-stone-900">Dokumentasi Foto</h2>
+                        <p class="text-sm text-stone-500 mt-0.5">{{ $report->photos->count() }} foto kegiatan</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
+                    @foreach($report->photos as $photo)
+                        <a href="{{ $photo->url() }}" target="_blank" rel="noopener"
+                           class="group relative aspect-square rounded-xl overflow-hidden bg-stone-100 ring-1 ring-stone-200/80">
+                            <img src="{{ $photo->url() }}" alt="Dokumentasi foto"
+                                 class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endif
+
+        {{-- Komentar --}}
+        <section id="komentar" class="mt-12">
+            <h2 class="text-lg font-bold text-stone-900 mb-1">Komentar</h2>
+            <p id="comments-subtitle" class="text-sm text-stone-500 mb-5">
+                @if($report->comments_count > 0)
+                    {{ $report->comments_count }} komentar dari anggota
+                @else
+                    Belum ada komentar
+                @endif
+            </p>
+
+            @auth
+                <form id="comment-form" class="mb-8 rounded-2xl bg-white border border-stone-200 p-4 shadow-sm">
+                    <label for="comment-body" class="sr-only">Tulis komentar</label>
+                    <textarea id="comment-body" name="body" rows="3" required maxlength="1000"
+                        placeholder="Bagikan tanggapan atau apresiasi untuk kegiatan ini..."
+                        class="w-full rounded-xl border border-stone-200 bg-stone-50 px-3.5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white resize-y min-h-[88px]"></textarea>
+                    <p id="comment-error" class="hidden text-red-600 text-xs mt-1.5"></p>
+                    <div class="mt-3 flex justify-end">
+                        <button type="submit" id="comment-submit"
+                            class="bg-emerald-600 text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-emerald-700 transition disabled:opacity-60">
+                            Kirim
+                        </button>
+                    </div>
+                </form>
+            @else
+                <div class="mb-8 rounded-2xl border border-dashed border-stone-300 bg-stone-50 px-5 py-6 text-center">
+                    <p class="text-sm text-stone-600">
+                        <a href="{{ route('login') }}" class="font-medium text-emerald-700 hover:underline">Login</a>
+                        dulu untuk menulis komentar.
+                    </p>
+                </div>
+            @endauth
+
+            <div id="comments-list" class="space-y-3">
+                @forelse($report->comments as $comment)
+                    <div class="comment-item rounded-2xl bg-white border border-stone-200 px-4 py-4" data-comment-id="{{ $comment->id }}">
+                        <div class="flex items-start gap-3">
+                            <div class="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 text-sm font-semibold">
+                                {{ strtoupper(substr($comment->user->name, 0, 1)) }}
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div>
+                                        <p class="text-sm font-semibold text-stone-800">{{ $comment->user->name }}</p>
+                                        <p class="text-xs text-stone-400 mt-0.5">{{ $comment->created_at->diffForHumans() }}</p>
+                                    </div>
+                                    @auth
+                                        @if(auth()->user()->isAdmin() || auth()->id() === $comment->user_id)
+                                            <button type="button"
+                                                class="comment-delete text-xs text-stone-400 hover:text-red-600 transition"
+                                                data-delete-url="{{ route('reports.comments.destroy', $comment) }}">
+                                                Hapus
+                                            </button>
+                                        @endif
+                                    @endauth
+                                </div>
+                                <p class="text-sm text-stone-700 mt-2 leading-relaxed whitespace-pre-line">{{ $comment->body }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <p id="comments-empty" class="text-sm text-stone-500 text-center py-6">Jadilah yang pertama berkomentar.</p>
+                @endforelse
+            </div>
+        </section>
+
+        <div class="mt-12 pt-6 border-t border-stone-200">
+            <a href="{{ route('timeline') }}" class="text-sm font-medium text-emerald-700 hover:text-emerald-800">
+                &larr; Kembali ke timeline kegiatan
+            </a>
+        </div>
+    </div>
+</article>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const root = document.getElementById('report-detail');
+    if (!root) return;
+
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+    if (!csrf) return;
+
+    const likesCountEl = document.getElementById('likes-count');
+    const commentsCountEl = document.getElementById('comments-count');
+    const commentsSubtitle = document.getElementById('comments-subtitle');
+    const commentsList = document.getElementById('comments-list');
+    const likeBtn = document.getElementById('like-btn');
+    const likeIcon = document.getElementById('like-icon');
+    const likeLabel = document.getElementById('like-label');
+    const commentForm = document.getElementById('comment-form');
+
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    async function request(url, options = {}) {
+        const res = await fetch(url, {
+            headers: {
+                'X-CSRF-TOKEN': csrf,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                ...(options.headers || {}),
+            },
+            credentials: 'same-origin',
+            ...options,
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.status === 401 || res.status === 419) {
+            window.location.href = '{{ route('login') }}';
+            throw new Error('Unauthenticated');
+        }
+
+        if (!res.ok) {
+            const message = data.message
+                || (data.errors ? Object.values(data.errors).flat().join(' ') : null)
+                || 'Terjadi kesalahan. Coba lagi.';
+            throw new Error(message);
+        }
+
+        return data;
+    }
+
+    function setLikedUi(liked) {
+        if (!likeBtn) return;
+        likeBtn.classList.toggle('bg-emerald-600', liked);
+        likeBtn.classList.toggle('text-white', liked);
+        likeBtn.classList.toggle('hover:bg-emerald-700', liked);
+        likeBtn.classList.toggle('bg-emerald-50', !liked);
+        likeBtn.classList.toggle('text-emerald-800', !liked);
+        likeBtn.classList.toggle('hover:bg-emerald-100', !liked);
+        if (likeIcon) likeIcon.textContent = liked ? '♥' : '♡';
+        if (likeLabel) likeLabel.textContent = liked ? 'Disukai' : 'Suka';
+        root.dataset.liked = liked ? '1' : '0';
+    }
+
+    function updateCommentsMeta(count) {
+        if (commentsCountEl) commentsCountEl.textContent = count;
+        if (commentsSubtitle) {
+            commentsSubtitle.textContent = count > 0
+                ? count + ' komentar dari anggota'
+                : 'Belum ada komentar';
+        }
+        const empty = document.getElementById('comments-empty');
+        if (empty && count > 0) empty.remove();
+        if (count === 0 && commentsList && !document.getElementById('comments-empty')) {
+            const p = document.createElement('p');
+            p.id = 'comments-empty';
+            p.className = 'text-sm text-stone-500 text-center py-6';
+            p.textContent = 'Jadilah yang pertama berkomentar.';
+            commentsList.appendChild(p);
+        }
+    }
+
+    function bindDeleteButtons(scope = document) {
+        scope.querySelectorAll('.comment-delete').forEach((btn) => {
+            if (btn.dataset.bound) return;
+            btn.dataset.bound = '1';
+            btn.addEventListener('click', async () => {
+                if (!confirm('Hapus komentar ini?')) return;
+                btn.disabled = true;
+                try {
+                    const data = await request(btn.dataset.deleteUrl, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                    });
+                    const item = btn.closest('.comment-item');
+                    item?.remove();
+                    updateCommentsMeta(data.comments_count);
+                } catch (e) {
+                    alert(e.message);
+                    btn.disabled = false;
+                }
+            });
+        });
+    }
+
+    function renderComment(comment) {
+        const wrap = document.createElement('div');
+        wrap.className = 'comment-item rounded-2xl bg-white border border-stone-200 px-4 py-4';
+        wrap.dataset.commentId = comment.id;
+        wrap.innerHTML = `
+            <div class="flex items-start gap-3">
+                <div class="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 text-sm font-semibold">
+                    ${escapeHtml(comment.user_initial)}
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <p class="text-sm font-semibold text-stone-800">${escapeHtml(comment.user_name)}</p>
+                            <p class="text-xs text-stone-400 mt-0.5">${escapeHtml(comment.created_at)}</p>
+                        </div>
+                        ${comment.can_delete ? `<button type="button" class="comment-delete text-xs text-stone-400 hover:text-red-600 transition" data-delete-url="${escapeHtml(comment.delete_url)}">Hapus</button>` : ''}
+                    </div>
+                    <p class="text-sm text-stone-700 mt-2 leading-relaxed whitespace-pre-line">${escapeHtml(comment.body)}</p>
+                </div>
+            </div>
+        `;
+        return wrap;
+    }
+
+    if (likeBtn) {
+        likeBtn.addEventListener('click', async () => {
+            likeBtn.disabled = true;
+            try {
+                const data = await request(root.dataset.likeUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                setLikedUi(data.liked);
+                if (likesCountEl) likesCountEl.textContent = data.likes_count;
+            } catch (e) {
+                alert(e.message);
+            } finally {
+                likeBtn.disabled = false;
+            }
+        });
+    }
+
+    if (commentForm) {
+        commentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const textarea = document.getElementById('comment-body');
+            const errorEl = document.getElementById('comment-error');
+            const submitBtn = document.getElementById('comment-submit');
+            const body = (textarea?.value || '').trim();
+
+            if (errorEl) {
+                errorEl.classList.add('hidden');
+                errorEl.textContent = '';
+            }
+
+            if (body.length < 2) {
+                if (errorEl) {
+                    errorEl.textContent = 'Komentar minimal 2 karakter.';
+                    errorEl.classList.remove('hidden');
+                }
+                return;
+            }
+
+            submitBtn.disabled = true;
+            try {
+                const data = await request(root.dataset.commentUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ body }),
+                });
+
+                document.getElementById('comments-empty')?.remove();
+                const node = renderComment(data.comment);
+                commentsList.prepend(node);
+                bindDeleteButtons(node);
+                updateCommentsMeta(data.comments_count);
+                textarea.value = '';
+            } catch (err) {
+                if (errorEl) {
+                    errorEl.textContent = err.message;
+                    errorEl.classList.remove('hidden');
+                } else {
+                    alert(err.message);
+                }
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    }
+
+    bindDeleteButtons();
+})();
+</script>
+@endpush

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', $siteSettings['site_name'])</title>
     <meta name="description" content="{{ $siteSettings['site_tagline'] }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/jpeg" href="{{ asset('assets/images/logo/logo.jpeg') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -86,5 +87,6 @@
             &copy; {{ date('Y') }} {{ $siteSettings['site_name'] }}. All rights reserved.
         </div>
     </footer>
+    @stack('scripts')
 </body>
 </html>
