@@ -217,15 +217,16 @@
     }
 
     async function request(url, options = {}) {
+        const { headers: extraHeaders, ...rest } = options;
         const res = await fetch(url, {
+            credentials: 'same-origin',
+            ...rest,
             headers: {
                 'X-CSRF-TOKEN': csrf,
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
-                ...(options.headers || {}),
+                ...(extraHeaders || {}),
             },
-            credentials: 'same-origin',
-            ...options,
         });
 
         const data = await res.json().catch(() => ({}));
@@ -240,6 +241,10 @@
                 || (data.errors ? Object.values(data.errors).flat().join(' ') : null)
                 || 'Terjadi kesalahan. Coba lagi.';
             throw new Error(message);
+        }
+
+        if (typeof data.likes_count === 'undefined' && typeof data.comments_count === 'undefined' && typeof data.liked === 'undefined' && !data.comment) {
+            throw new Error('Respons server tidak valid. Coba refresh halaman.');
         }
 
         return data;
@@ -285,8 +290,8 @@
                 btn.disabled = true;
                 try {
                     const data = await request(btn.dataset.deleteUrl, {
-                        method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json' },
+                        method: 'POST',
+                        body: formBody({ _method: 'DELETE' }),
                     });
                     const item = btn.closest('.comment-item');
                     item?.remove();
@@ -323,16 +328,25 @@
         return wrap;
     }
 
+    function formBody(fields = {}) {
+        const fd = new FormData();
+        fd.append('_token', csrf);
+        Object.entries(fields).forEach(([key, value]) => fd.append(key, value));
+        return fd;
+    }
+
     if (likeBtn) {
         likeBtn.addEventListener('click', async () => {
             likeBtn.disabled = true;
             try {
                 const data = await request(root.dataset.likeUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    body: formBody(),
                 });
-                setLikedUi(data.liked);
-                if (likesCountEl) likesCountEl.textContent = data.likes_count;
+                setLikedUi(!!data.liked);
+                if (likesCountEl && typeof data.likes_count !== 'undefined') {
+                    likesCountEl.textContent = data.likes_count;
+                }
             } catch (e) {
                 alert(e.message);
             } finally {
@@ -366,9 +380,12 @@
             try {
                 const data = await request(root.dataset.commentUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ body }),
+                    body: formBody({ body }),
                 });
+
+                if (!data.comment || !data.comment.id) {
+                    throw new Error(data.message || 'Gagal memuat komentar. Coba refresh halaman.');
+                }
 
                 document.getElementById('comments-empty')?.remove();
                 const node = renderComment(data.comment);
