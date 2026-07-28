@@ -39,17 +39,19 @@
     </div>
 
     <div class="sm:col-span-2">
-        <label class="block text-sm font-medium text-stone-700 mb-1">ID Video YouTube (opsional)</label>
-        <input type="text" name="video" value="{{ old('video', isset($report) ? ($report->youtubeId() ?? '') : '') }}"
-            placeholder="Contoh: ocFxGIdj6GI"
-            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-        <p class="text-xs text-stone-500 mt-1">Cukup isi ID-nya saja. Dari link <code class="bg-stone-100 px-1 rounded">youtube.com/watch?v=ocFxGIdj6GI</code> ambil bagian <strong>ocFxGIdj6GI</strong>. Kosongkan untuk menghapus video.</p>
-        @if(isset($report) && $report->youtubeEmbedUrl())
-            <div class="mt-3 aspect-video max-w-md rounded-lg overflow-hidden bg-stone-900">
-                <iframe src="{{ $report->youtubeEmbedUrl() }}" class="w-full h-full" allowfullscreen loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+        <label class="block text-sm font-medium text-stone-700 mb-1">Upload Video (opsional)</label>
+        <p class="text-xs text-stone-500 mb-2">Format: MP4 / WebM / MOV &middot; Maksimal <strong>30MB</strong>. Kompres video dulu jika terlalu besar.</p>
+        @if(isset($report) && $report->videoUrl())
+            <div class="mb-3">
+                <video src="{{ $report->videoUrl() }}" controls class="w-full max-w-md rounded-lg bg-stone-900"></video>
+                <label class="inline-flex items-center gap-2 mt-2 text-sm text-red-600">
+                    <input type="checkbox" name="remove_video" value="1" class="rounded border-stone-300">
+                    Hapus video saat ini
+                </label>
             </div>
         @endif
+        <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime"
+            class="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:text-emerald-700 file:text-sm">
         @error('video')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
     </div>
 

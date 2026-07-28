@@ -42,17 +42,16 @@
     <div class="max-w-3xl mx-auto px-4 sm:px-6">
         {{-- Media --}}
         <div class="mt-8">
-            @if($report->youtubeEmbedUrl())
+            @if($report->videoUrl())
                 <div class="aspect-video rounded-2xl overflow-hidden bg-stone-900 shadow-md ring-1 ring-black/5">
-                    <iframe
-                        src="{{ $report->youtubeEmbedUrl() }}"
-                        title="{{ $report->title }}"
-                        class="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerpolicy="strict-origin-when-cross-origin"
-                        allowfullscreen
-                        loading="lazy">
-                    </iframe>
+                    <video
+                        src="{{ $report->videoUrl() }}"
+                        controls
+                        playsinline
+                        preload="metadata"
+                        class="w-full h-full">
+                        Browser Anda tidak mendukung pemutar video.
+                    </video>
                 </div>
             @else
                 <div class="aspect-video rounded-2xl overflow-hidden bg-stone-100 shadow-md ring-1 ring-black/5">

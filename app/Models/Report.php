@@ -77,52 +77,15 @@ class Report extends Model
         return $first ? asset('storage/'.$first->photo) : 'https://placehold.co/800x500?text=KKN+Taman+Sari';
     }
 
-    public function youtubeId(): ?string
+    public function hasVideoFile(): bool
     {
-        return static::extractYoutubeId($this->video);
+        // Path storage (reports/videos/...) — bukan ID YouTube lama
+        return filled($this->video) && str_contains($this->video, '/');
     }
 
-    public function youtubeEmbedUrl(): ?string
+    public function videoUrl(): ?string
     {
-        $id = $this->youtubeId();
-
-        return $id ? 'https://www.youtube.com/embed/'.$id : null;
-    }
-
-    public static function extractYoutubeId(?string $url): ?string
-    {
-        if (! $url) {
-            return null;
-        }
-
-        $url = trim($url);
-
-        if (preg_match('/^[a-zA-Z0-9_-]{11}$/', $url)) {
-            return $url;
-        }
-
-        $patterns = [
-            '/youtu\.be\/([a-zA-Z0-9_-]{11})/',
-            '/youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/',
-            '/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/',
-            '/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/',
-            '/youtube\.com\/live\/([a-zA-Z0-9_-]{11})/',
-        ];
-
-        foreach ($patterns as $pattern) {
-            if (preg_match($pattern, $url, $matches)) {
-                return $matches[1];
-            }
-        }
-
-        return null;
-    }
-
-    public static function normalizeYoutubeUrl(?string $url): ?string
-    {
-        $id = static::extractYoutubeId($url);
-
-        return $id ? 'https://www.youtube.com/watch?v='.$id : null;
+        return $this->hasVideoFile() ? asset('storage/'.$this->video) : null;
     }
 
     public function isLikedBy(?User $user): bool

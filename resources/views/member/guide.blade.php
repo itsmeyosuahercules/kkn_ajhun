@@ -62,8 +62,8 @@
             <li>Buka menu <strong>Laporan Saya</strong>, lalu klik <strong>+ Buat Laporan</strong>.</li>
             <li>Isi <strong>judul</strong> kegiatan, <strong>tanggal</strong> pelaksanaan, dan <strong>lokasi</strong>.</li>
             <li>Tulis <strong>deskripsi</strong> kegiatan &mdash; ceritakan apa yang dilakukan, sejelas mungkin.</li>
-            <li>Isi <strong>ID Video YouTube</strong> (opsional) — contoh dari link <code>youtube.com/watch?v=ocFxGIdj6GI</code> cukup tulis <strong>ocFxGIdj6GI</strong>. Boleh juga unggah beberapa foto.</li>
-            <li>Kalau ada ID YouTube, di halaman publik video tampil di atas, lalu foto di section <strong>Dokumentasi Foto</strong>.</li>
+            <li>Unggah <strong>video</strong> (opsional, MP4/WebM/MOV, maks 30MB) dan/atau beberapa foto dokumentasi. Video besar? Kompres dulu.</li>
+            <li>Kalau ada video, di halaman publik video tampil di atas, lalu foto di section <strong>Dokumentasi Foto</strong>.</li>
             <li>Klik <strong>Simpan</strong>. Laporan langsung tampil di Timeline &amp; Galeri website.</li>
             <li>User yang sudah login bisa <strong>suka</strong> dan <strong>komentar</strong> di halaman detail laporan.</li>
         </ol>

@@ -71,8 +71,8 @@
             <li>Buka menu <strong>Kelola Laporan</strong>.</li>
             <li>Anda bisa melihat semua laporan dari semua anggota. Gunakan kolom pencarian untuk cari judul tertentu.</li>
             <li>Klik <strong>Edit</strong> untuk memperbaiki laporan, atau <strong>Hapus</strong> untuk menghapus laporan yang tidak sesuai.</li>
-            <li>Saat membuat/edit laporan, isi <strong>ID Video YouTube</strong> (opsional, contoh: <code>ocFxGIdj6GI</code>) dan/atau unggah beberapa foto.</li>
-            <li>Di halaman publik: video YouTube tampil di section Video; foto tetap di section <strong>Dokumentasi Foto</strong> di bawahnya.</li>
+            <li>Saat membuat/edit laporan, unggah <strong>video</strong> (opsional, MP4/WebM/MOV maks 30MB) dan/atau beberapa foto.</li>
+            <li>Di halaman publik: video tampil di atas; foto tetap di section <strong>Dokumentasi Foto</strong> di bawahnya.</li>
             <li>User terdaftar bisa suka &amp; komentar di detail laporan. Admin bisa menghapus komentar siapa pun.</li>
         </ol>
         <div class="mt-4 rounded-lg bg-stone-50 border border-stone-200 text-stone-600 text-sm px-4 py-3">

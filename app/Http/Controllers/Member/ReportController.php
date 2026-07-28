@@ -27,11 +27,11 @@ class ReportController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request);
-        $data['video'] = Report::extractYoutubeId($data['video'] ?? null);
         $member = $request->user()->member;
 
-        $report = $member->reports()->create(collect($data)->except(['photos'])->all());
+        $report = $member->reports()->create(collect($data)->except(['photos', 'video', 'remove_video'])->all());
 
+        $this->storeVideo($request, $report);
         $this->storePhotos($request, $report);
 
         return redirect()->route('member.reports.index')->with('success', 'Laporan berhasil ditambahkan.');
@@ -50,9 +50,9 @@ class ReportController extends Controller
         $this->authorizeOwner($request, $report);
 
         $data = $this->validateData($request);
-        $data['video'] = Report::extractYoutubeId($data['video'] ?? null);
-        $report->update(collect($data)->except(['photos'])->all());
+        $report->update(collect($data)->except(['photos', 'video', 'remove_video'])->all());
 
+        $this->storeVideo($request, $report);
         $this->storePhotos($request, $report);
 
         return redirect()->route('member.reports.index')->with('success', 'Laporan berhasil diperbarui.');
@@ -67,6 +67,9 @@ class ReportController extends Controller
         }
         if ($report->cover_photo) {
             Storage::disk('public')->delete($report->cover_photo);
+        }
+        if ($report->hasVideoFile()) {
+            Storage::disk('public')->delete($report->video);
         }
         $report->delete();
 
@@ -92,6 +95,24 @@ class ReportController extends Controller
     private function authorizeOwner(Request $request, Report $report): void
     {
         abort_if($report->member_id !== $request->user()->member?->id, 403);
+    }
+
+    private function storeVideo(Request $request, Report $report): void
+    {
+        if ($request->boolean('remove_video') && $report->video) {
+            if ($report->hasVideoFile()) {
+                Storage::disk('public')->delete($report->video);
+            }
+            $report->update(['video' => null]);
+        }
+
+        if ($request->hasFile('video')) {
+            if ($report->hasVideoFile()) {
+                Storage::disk('public')->delete($report->video);
+            }
+            $path = $request->file('video')->store('reports/videos', 'public');
+            $report->update(['video' => $path]);
+        }
     }
 
     private function storePhotos(Request $request, Report $report): void
@@ -121,16 +142,12 @@ class ReportController extends Controller
             'description' => ['required', 'string'],
             'status' => ['required', 'in:draft,published'],
             'photos.*' => ['nullable', 'image', 'max:4096'],
-            'video' => [
-                'nullable',
-                'string',
-                'max:255',
-                function (string $attribute, mixed $value, \Closure $fail) {
-                    if ($value && ! Report::extractYoutubeId($value)) {
-                        $fail('ID YouTube tidak valid. Contoh: ocFxGIdj6GI');
-                    }
-                },
-            ],
+            // 30MB
+            'video' => ['nullable', 'file', 'mimetypes:video/mp4,video/webm,video/quicktime', 'max:30720'],
+            'remove_video' => ['nullable', 'boolean'],
+        ], [
+            'video.max' => 'Ukuran video maksimal 30MB.',
+            'video.mimetypes' => 'Format video harus MP4, WebM, atau MOV.',
         ]);
     }
 }
