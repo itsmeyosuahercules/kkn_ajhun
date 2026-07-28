@@ -23,6 +23,7 @@ class MemberFactory extends Factory
             'phone' => fake()->numerify('08##########'),
             'bio' => fake()->paragraph(),
             'instagram' => '@'.fake()->userName(),
+            'hobi' => fake()->randomElement(['Fotografi', 'Membaca', 'Futsal', 'Memasak', 'Menulis', 'Badminton']),
         ];
     }
 }

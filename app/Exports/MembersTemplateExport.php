@@ -24,6 +24,7 @@ class MembersTemplateExport implements FromArray, WithHeadings, WithStyles
                 'Universitas Contoh',
                 '081234567890',
                 '@ahmadfauzi',
+                'Fotografi, Badminton',
                 'Mahasiswa aktif jurusan TI.',
             ],
         ];
@@ -33,7 +34,7 @@ class MembersTemplateExport implements FromArray, WithHeadings, WithStyles
     {
         return [
             'nama', 'email', 'password', 'nim', 'umur', 'jabatan',
-            'jurusan', 'fakultas', 'universitas', 'no_hp', 'instagram', 'bio',
+            'jurusan', 'fakultas', 'universitas', 'no_hp', 'instagram', 'hobi', 'bio',
         ];
     }
 

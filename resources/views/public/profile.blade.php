@@ -23,6 +23,7 @@
                 <div class="flex flex-wrap justify-center sm:justify-start gap-3 mt-3 text-sm text-stone-500">
                     @if($member->phone)<span>📞 {{ $member->phone }}</span>@endif
                     @if($member->instagram)<span>📷 {{ $member->instagram }}</span>@endif
+                    @if($member->hobi)<span>🎯 Hobi: {{ $member->hobi }}</span>@endif
                 </div>
 
                 @if($member->bio)

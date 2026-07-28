@@ -42,7 +42,7 @@
         </h3>
         <ol class="space-y-3 text-sm text-stone-600 list-decimal list-inside">
             <li>Buka menu <strong>Profil Saya</strong> di sidebar.</li>
-            <li>Lengkapi data: umur, NIM, jurusan, fakultas, universitas, nomor HP, Instagram, dan bio singkat tentang diri Anda.</li>
+            <li>Lengkapi data: umur, NIM, jurusan, fakultas, universitas, nomor HP, Instagram, hobi, dan bio singkat tentang diri Anda.</li>
             <li>Unggah <strong>Foto Profil</strong> (JPG/PNG, maks 2MB) supaya profil terlihat lebih menarik.</li>
             <li>Unggah <strong>CV</strong> bila ada (PDF/DOC/DOCX, maks 5MB). Ini opsional.</li>
             <li>Klik <strong>Simpan Perubahan</strong>.</li>
@@ -62,8 +62,10 @@
             <li>Buka menu <strong>Laporan Saya</strong>, lalu klik <strong>+ Buat Laporan</strong>.</li>
             <li>Isi <strong>judul</strong> kegiatan, <strong>tanggal</strong> pelaksanaan, dan <strong>lokasi</strong>.</li>
             <li>Tulis <strong>deskripsi</strong> kegiatan &mdash; ceritakan apa yang dilakukan, sejelas mungkin.</li>
-            <li>Unggah <strong>foto cover</strong> (foto utama) dan boleh tambah <strong>beberapa foto dokumentasi</strong> sekaligus.</li>
+            <li>Isi <strong>ID Video YouTube</strong> (opsional) — contoh dari link <code>youtube.com/watch?v=ocFxGIdj6GI</code> cukup tulis <strong>ocFxGIdj6GI</strong>. Boleh juga unggah beberapa foto.</li>
+            <li>Kalau ada ID YouTube, di halaman publik video tampil di atas, lalu foto di section <strong>Dokumentasi Foto</strong>.</li>
             <li>Klik <strong>Simpan</strong>. Laporan langsung tampil di Timeline &amp; Galeri website.</li>
+            <li>User yang sudah login bisa <strong>suka</strong> dan <strong>komentar</strong> di halaman detail laporan.</li>
         </ol>
         <div class="mt-4 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-sm px-4 py-3">
             <strong>Tips:</strong> Foto yang jelas &amp; terang bikin dokumentasi jauh lebih bagus. Ukuran foto jangan terlalu besar biar cepat terunggah.

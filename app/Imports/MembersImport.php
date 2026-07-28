@@ -36,6 +36,7 @@ class MembersImport implements ToCollection, WithHeadingRow
                 'phone' => $this->nullableString($row['no_hp'] ?? $row['phone'] ?? null),
                 'bio' => $this->nullableString($row['bio'] ?? null),
                 'instagram' => $this->nullableString($row['instagram'] ?? null),
+                'hobi' => $this->nullableString($row['hobi'] ?? null),
             ];
 
             // Skip fully empty rows
@@ -55,6 +56,7 @@ class MembersImport implements ToCollection, WithHeadingRow
                 'phone' => ['nullable', 'string', 'max:50'],
                 'bio' => ['nullable', 'string'],
                 'instagram' => ['nullable', 'string', 'max:255'],
+                'hobi' => ['nullable', 'string', 'max:255'],
             ]);
 
             if ($validator->fails()) {
@@ -86,6 +88,7 @@ class MembersImport implements ToCollection, WithHeadingRow
                         'phone' => $data['phone'],
                         'bio' => $data['bio'],
                         'instagram' => $data['instagram'],
+                        'hobi' => $data['hobi'],
                     ]);
                 });
 

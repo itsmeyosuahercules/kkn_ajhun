@@ -27,9 +27,10 @@ class ReportController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validateData($request);
+        $data['video'] = Report::extractYoutubeId($data['video'] ?? null);
         $member = $request->user()->member;
 
-        $report = $member->reports()->create($data);
+        $report = $member->reports()->create(collect($data)->except(['photos'])->all());
 
         $this->storePhotos($request, $report);
 
@@ -49,7 +50,8 @@ class ReportController extends Controller
         $this->authorizeOwner($request, $report);
 
         $data = $this->validateData($request);
-        $report->update($data);
+        $data['video'] = Report::extractYoutubeId($data['video'] ?? null);
+        $report->update(collect($data)->except(['photos'])->all());
 
         $this->storePhotos($request, $report);
 
@@ -119,6 +121,16 @@ class ReportController extends Controller
             'description' => ['required', 'string'],
             'status' => ['required', 'in:draft,published'],
             'photos.*' => ['nullable', 'image', 'max:4096'],
+            'video' => [
+                'nullable',
+                'string',
+                'max:255',
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if ($value && ! Report::extractYoutubeId($value)) {
+                        $fail('ID YouTube tidak valid. Contoh: ocFxGIdj6GI');
+                    }
+                },
+            ],
         ]);
     }
 }

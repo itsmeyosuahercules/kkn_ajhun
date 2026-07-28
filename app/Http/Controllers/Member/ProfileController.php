@@ -36,6 +36,7 @@ class ProfileController extends Controller
             'phone' => ['nullable', 'string', 'max:50'],
             'bio' => ['nullable', 'string'],
             'instagram' => ['nullable', 'string', 'max:255'],
+            'hobi' => ['nullable', 'string', 'max:255'],
             'photo' => ['nullable', 'image', 'max:2048'],
             'cv' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
         ]);
@@ -75,6 +76,7 @@ class ProfileController extends Controller
             'phone' => $data['phone'] ?? null,
             'bio' => $data['bio'] ?? null,
             'instagram' => $data['instagram'] ?? null,
+            'hobi' => $data['hobi'] ?? null,
             'photo' => $photoPath,
             'cv' => $cvPath,
         ]);

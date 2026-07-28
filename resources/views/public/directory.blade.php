@@ -21,6 +21,9 @@
                     <h3 class="mt-4 font-semibold text-stone-800 group-hover:text-emerald-700">{{ $member->user->name }}</h3>
                     <p class="text-xs text-emerald-700 font-medium mt-0.5">{{ $member->jabatan }}</p>
                     <p class="text-xs text-stone-500 mt-1">{{ $member->jurusan }}@if($member->age) &middot; {{ $member->age }} th @endif</p>
+                    @if($member->hobi)
+                        <p class="text-xs text-stone-500 mt-1.5 line-clamp-2">Hobi: {{ $member->hobi }}</p>
+                    @endif
                     <div class="flex items-center justify-center gap-2 mt-3">
                         <span class="inline-flex items-center text-[11px] text-stone-500 bg-stone-100 rounded-full px-2.5 py-0.5">{{ $member->reports->count() }} kegiatan</span>
                         @if($member->cv)

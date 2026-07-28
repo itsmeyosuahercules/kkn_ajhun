@@ -71,6 +71,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '08'.fake()->numerify('##########'),
                 'bio' => fake()->paragraph(),
                 'instagram' => '@'.fake()->userName(),
+                'hobi' => fake()->randomElement(['Fotografi', 'Membaca', 'Futsal', 'Memasak', 'Menulis', 'Badminton']),
             ]);
 
             // 2-4 sample reports per member

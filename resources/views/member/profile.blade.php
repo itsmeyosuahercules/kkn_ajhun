@@ -66,6 +66,11 @@
                 <input type="text" name="instagram" value="{{ old('instagram', $member->instagram ?? '') }}"
                     class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
+            <div>
+                <label class="block text-sm font-medium text-stone-700 mb-1">Hobi</label>
+                <input type="text" name="hobi" value="{{ old('hobi', $member->hobi ?? '') }}" placeholder="Contoh: Fotografi, Badminton"
+                    class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
             <div class="sm:col-span-2">
                 <label class="block text-sm font-medium text-stone-700 mb-1">Bio</label>
                 <textarea name="bio" rows="3" class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">{{ old('bio', $member->bio ?? '') }}</textarea>

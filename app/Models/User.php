@@ -35,6 +35,16 @@ class User extends Authenticatable
         return $this->hasOne(Member::class);
     }
 
+    public function reportLikes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ReportLike::class);
+    }
+
+    public function reportComments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ReportComment::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

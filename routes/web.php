@@ -11,6 +11,7 @@ use App\Http\Controllers\Member\DashboardController as MemberDashboardController
 use App\Http\Controllers\Member\ProfileController as MemberProfileController;
 use App\Http\Controllers\Member\ReportController as MemberReportController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\ReportInteractionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +36,17 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'store']);
 });
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
+
+/*
+|--------------------------------------------------------------------------
+| Interaksi laporan (like & komentar) — hanya user terdaftar
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
+    Route::post('/laporan/{report:slug}/like', [ReportInteractionController::class, 'toggleLike'])->name('reports.like');
+    Route::post('/laporan/{report:slug}/comments', [ReportInteractionController::class, 'storeComment'])->name('reports.comments.store');
+    Route::delete('/komentar/{comment}', [ReportInteractionController::class, 'destroyComment'])->name('reports.comments.destroy');
+});
 
 /*
 |--------------------------------------------------------------------------

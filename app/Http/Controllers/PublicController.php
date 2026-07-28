@@ -59,8 +59,14 @@ class PublicController extends Controller
     public function reportDetail(Report $report): View
     {
         abort_if($report->status !== 'published', 404);
-        $report->load('member.user', 'photos');
 
-        return view('public.report-detail', compact('report'));
+        $report->load(['member.user', 'photos', 'comments.user']);
+        $report->loadCount(['likes', 'comments']);
+
+        $liked = auth()->check()
+            ? $report->likes()->where('user_id', auth()->id())->exists()
+            : false;
+
+        return view('public.report-detail', compact('report', 'liked'));
     }
 }

@@ -29,6 +29,21 @@
         <textarea name="description" rows="6" required class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">{{ old('description', $report->description ?? '') }}</textarea>
     </div>
 
+    <div class="sm:col-span-2">
+        <label class="block text-sm font-medium text-stone-700 mb-1">ID Video YouTube (opsional)</label>
+        <input type="text" name="video" value="{{ old('video', isset($report) ? ($report->youtubeId() ?? '') : '') }}"
+            placeholder="Contoh: ocFxGIdj6GI"
+            class="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <p class="text-xs text-stone-500 mt-1">Cukup isi ID-nya saja. Dari link <code class="bg-stone-100 px-1 rounded">youtube.com/watch?v=ocFxGIdj6GI</code> ambil bagian <strong>ocFxGIdj6GI</strong>. Kosongkan untuk menghapus video.</p>
+        @if(isset($report) && $report->youtubeEmbedUrl())
+            <div class="mt-3 aspect-video max-w-md rounded-lg overflow-hidden bg-stone-900">
+                <iframe src="{{ $report->youtubeEmbedUrl() }}" class="w-full h-full" allowfullscreen loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+            </div>
+        @endif
+        @error('video')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
+    </div>
+
     @if(isset($report) && $report->photos->isNotEmpty())
         <div class="sm:col-span-2">
             <label class="block text-sm font-medium text-stone-700 mb-2">Foto Saat Ini</label>

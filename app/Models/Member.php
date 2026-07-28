@@ -26,6 +26,7 @@ class Member extends Model
         'cv',
         'bio',
         'instagram',
+        'hobi',
     ];
 
     protected static function booted(): void
